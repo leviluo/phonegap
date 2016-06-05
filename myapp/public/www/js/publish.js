@@ -162,7 +162,7 @@ angular.module('publishcontrollers', [])
                     "http:192.168.2.121:50001/audio?uuid="+uuid,
                     function(result) {
                         // console.log('Upload success: ' + result.responseCode);
-                        // console.log(result.bytesSent + ' bytes sent');
+                        console.log(result.bytesSent + ' bytes sent');
                     },
                     function(error) {
                         // console.log('Error uploading file ' + path + ': ' + error.code);
