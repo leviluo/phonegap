@@ -17,7 +17,7 @@ register: function(req, res, next){
     var user = new User(req.body);
     user.save(function(err){
       if(err) return next(err);
-      return res.json(user);
+      return res.json({'id':0,'msg':'注册成功'});
     });
   },
 

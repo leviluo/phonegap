@@ -211,7 +211,7 @@
                 HttpService.postdata('user/register', data).success(function(data) {
                     $ionicPopup.alert({
                         title: '消息提示',
-                        template: data.message
+                        template: data.msg
                     }).then(function() {
                         if (data.id == 0) {
                             $state.go('login');

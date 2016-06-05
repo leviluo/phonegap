@@ -1,10 +1,3 @@
-// Ionic Starter App
-
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.services' is found in services.js
-// 'starter.controllers' is found in controllers.js
 angular.module('ionicApp', ['ionic','directive','publishcontrollers', 'starter.controllers', 'starter.services'])
 
 .run(function($ionicPlatform) {
@@ -24,49 +17,46 @@ angular.module('ionicApp', ['ionic','directive','publishcontrollers', 'starter.c
 })
 
 .config(function($stateProvider, $urlRouterProvider,$httpProvider) {
-//angularjs默认的json格式，要按formdata格式传送
-   $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+  
+  //angularjs默认的json格式，要按formdata格式传送
+   // $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 
-    var param = function(obj) {
-    var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
+  //   var param = function(obj) {
+  //   var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
       
-    for(name in obj) {
-      value = obj[name];
+  //   for(name in obj) {
+  //     value = obj[name];
         
-      if(value instanceof Array) {
-        for(i=0; i<value.length;i++){
-          subValue = value[i];
-          fullSubName = name + '[' + i + ']';
-          innerObj = {};
-          innerObj[fullSubName] = subValue;
-          query += param(innerObj) + '&';
-        }
-      }
-      else if(value instanceof Object) {
-        for(subName in value) {
-          subValue = value[subName];
-          fullSubName = name + '[' + subName + ']';
-          innerObj = {};
-          innerObj[fullSubName] = subValue;
-          query += param(innerObj) + '&';
-        }
-      }
-      else if(value !== undefined && value !== null)
-        query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
-    }
+  //     if(value instanceof Array) {
+  //       for(i=0; i<value.length;i++){
+  //         subValue = value[i];
+  //         fullSubName = name + '[' + i + ']';
+  //         innerObj = {};
+  //         innerObj[fullSubName] = subValue;
+  //         query += param(innerObj) + '&';
+  //       }
+  //     }
+  //     else if(value instanceof Object) {
+  //       for(subName in value) {
+  //         subValue = value[subName];
+  //         fullSubName = name + '[' + subName + ']';
+  //         innerObj = {};
+  //         innerObj[fullSubName] = subValue;
+  //         query += param(innerObj) + '&';
+  //       }
+  //     }
+  //     else if(value !== undefined && value !== null)
+  //       query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
+  //   }
       
-    return query.length ? query.substr(0, query.length - 1) : query;
-  };
+  //   return query.length ? query.substr(0, query.length - 1) : query;
+  // };
  
-  // Override $http service's default transformRequest
-  $httpProvider.defaults.transformRequest = [function(data) {
-    return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
-  }];
+  // // Override $http service's default transformRequest
+  // $httpProvider.defaults.transformRequest = [function(data) {
+  //   return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
+  // }];
 
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
   $stateProvider
     .state('intro', {
       url: '/intro',
