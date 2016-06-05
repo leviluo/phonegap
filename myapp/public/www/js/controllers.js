@@ -44,7 +44,6 @@
                         window.plugin.notification.local.hasPermission(function(granted) {
                             console.log('Permission has been granted: ' + granted);
 
-
                             //先判断是否需要删除
                             //            window.plugin.notification.local.isScheduled(remindId, function (isScheduled) {
                             //                // console.log('Notification with ID ' + id + ' is scheduled: ' + isScheduled);
@@ -209,8 +208,7 @@
 
             $scope.submit = function(data) {
 
-                HttpService.postdata('http:192.168.2.121:50001/user/register&callback=JSON_CALLBACK', data).success(function(data) {
-
+                HttpService.postdata('user/register', data).success(function(data) {
                     $ionicPopup.alert({
                         title: '消息提示',
                         template: data.message
@@ -227,7 +225,7 @@
         })
         .controller('LoginCtrl', function($scope, $ionicPopup, storeService, $state, HttpService) {
             $scope.submit = function(formdata) {
-                HttpService.postdata('http:192.168.2.121:50001/user/login', formdata).success(function(data) {
+                HttpService.postdata('http:192.168.2.121:50000/user/login', formdata).success(function(data) {
                     $ionicPopup.alert({
                         title: '消息提示',
                         template: data.message
@@ -266,7 +264,7 @@
             var location = (storeService.publicMethods('sessionStorage').get('location_city') == undefined) ? '' : storeService.publicMethods('sessionStorage').get('location_city');
             // alert(location);
             $scope.doRefresh = function() {
-                HttpService.getdata('http:192.168.2.121:50001/activity/getactivity', { location: '' }).success(function(data) {
+                HttpService.getdata('http:192.168.2.121:50000/activity/getactivity', { location: '' }).success(function(data) {
                     var titles = {};
                     $scope.images = {};
                     var array = [];

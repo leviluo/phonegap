@@ -130,7 +130,7 @@ angular.module('publishcontrollers', [])
 
             var uuid = data.uuid = Number(new Date()) + data.phone;
 
-            HttpService.postdata('http:192.168.2.121:50001/activity/publish', data).success(function(data) {
+            HttpService.postdata('http:192.168.2.121:50000/activity/publish', data).success(function(data) {
                 $ionicPopup.alert({
                     title: '消息提示',
                     template: data.message
@@ -159,7 +159,7 @@ angular.module('publishcontrollers', [])
                     path = mediaFiles[i].fullPath,
                     name = mediaFiles[i].name;
                 ft.upload(path,
-                    "http:192.168.2.121:50001/audio?uuid="+uuid,
+                    "http:192.168.2.121:50000/audio?uuid="+uuid,
                     function(result) {
                         // console.log('Upload success: ' + result.responseCode);
                         // console.log(result.bytesSent + ' bytes sent');
@@ -193,7 +193,7 @@ angular.module('publishcontrollers', [])
                     options.params = params;
 
                     ft.upload(path,
-                        "http:192.168.2.121:50001/images?uuid="+uuid,
+                        "http:192.168.2.121:50000/images?uuid="+uuid,
                         function(result) {
                             // alert('Upload success: ' + result.responseCode);
                             // alert(result.bytesSent + ' bytes sent');
