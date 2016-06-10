@@ -1,4 +1,0 @@
-module.exports = {
-	port: 50000,
-	mongodb: 'mongodb://localhost/phonegap_demo'
-}

@@ -1,6 +1,7 @@
 angular.module('ionicApp', ['ionic','directive','publishcontrollers', 'starter.controllers', 'starter.services'])
 
 .run(function($ionicPlatform) {
+  
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -56,6 +57,33 @@ angular.module('ionicApp', ['ionic','directive','publishcontrollers', 'starter.c
   // $httpProvider.defaults.transformRequest = [function(data) {
   //   return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
   // }];
+
+// $httpProvider.interceptors.push(['$q', '$storeService', function($q, $storeService) {
+//             return {
+//                 'request': function (config) {
+//                     config.headers = config.headers || {};
+//                     if ($storeService.publicMethod('localStorage').get('token')) {
+//                         config.headers.Authorization = 'Bearer ' + $localStorage.token;
+//                     }
+//                     return config;
+//                 },
+//                 'responseError': function(response) {
+//                     if(response.status === 401 || response.status === 403) {
+//                         $state.go('login');
+//                     }
+//                     return $q.reject(response);
+//                 }
+//             };
+//         }]);
+
+
+  $httpProvider.interceptors.push([
+    '$injector',
+    function ($injector) {
+      return $injector.get('AuthInterceptor');
+    }
+  ]);
+
 
   $stateProvider
     .state('intro', {
@@ -148,4 +176,4 @@ angular.module('ionicApp', ['ionic','directive','publishcontrollers', 'starter.c
   // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise("intro");
 
-});
+})

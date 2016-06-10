@@ -1,11 +1,11 @@
 angular.module('starter.services', [])
-.factory('HttpService', function($http) {
+    .factory('HttpService', function($http) {
         var Service = {};
         Service.postdata = function(url, data1) {
             return $http({
                 method: 'POST',
                 url: url,
-                data : data1,
+                data: data1,
             })
         };
 
@@ -15,11 +15,11 @@ angular.module('starter.services', [])
                 url: url,
                 params: params, // pass in data as strings  
             })
-        }; 
+        };
 
         return Service;
     })
-.factory("storeService", function($parse) {
+    .factory("storeService", function($parse) {
 
         aaaa = {};
 
@@ -74,7 +74,7 @@ angular.module('starter.services', [])
                     storage.setItem(key, saver);
                     return privateMethods.parseValue(saver);
                 },
-            ssss.get = function(key) {
+                ssss.get = function(key) {
                     if (!supported) {
                         try {
                             return privateMethods.parseValue($.cookie(key));
@@ -85,7 +85,7 @@ angular.module('starter.services', [])
                     var item = storage.getItem(key);
                     return privateMethods.parseValue(item);
                 },
-            ssss.remove = function(key) {
+                ssss.remove = function(key) {
                     if (!supported) {
                         try {
                             $.cookie(key, null);
@@ -97,7 +97,7 @@ angular.module('starter.services', [])
                     storage.removeItem(key);
                     return true;
                 },
-            ssss.bind = function($scope, key, def) {
+                ssss.bind = function($scope, key, def) {
                     def = def || '';
                     if (!publicMethods.get(key)) {
                         publicMethods.set(key, def);
@@ -111,4 +111,21 @@ angular.module('starter.services', [])
             return ssss;
         };
         return aaaa;
+    })
+    .factory('AuthInterceptor', function($rootScope,storeService,$q) {
+        return {
+            'request': function(config) {
+                config.headers = config.headers || {};
+                if (storeService.publicMethods('localStorage').get('token')) {
+                    config.headers.Authorization = 'Bearer ' + storeService.publicMethods('localStorage').get('token');
+                }
+                return config;
+            },
+            'responseError': function(response) {
+                if (response.status === 401 || response.status === 403) {
+                    $rootScope.$state.go('login');
+                }
+                return $q.reject(response);
+            }
+        };
     })
