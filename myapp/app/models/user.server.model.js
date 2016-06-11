@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-
+var ObjectId = mongoose.Schema.Types.ObjectId;
 // var NewsSchema = new mongoose.Schema({
 //     title: String,
 //     content: String,
@@ -8,12 +8,12 @@ var mongoose = require('mongoose');
 //         default: Date.now
 //     }
 // })
-  
+
 var UserSchema = new mongoose.Schema({
     status: { type: Number, default: 0 },
     phone: Number,
     password: String,
-    token:String,
+    token: String,
     role: { type: Number, default: 0 },
     reg_time: {
         type: Date,
@@ -23,36 +23,46 @@ var UserSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    last_address: { type: String, default: ''},
+    last_address: { type: String, default: '' },
     login_count: { type: Number, default: 0 },
-})  
+})
 
 var ActivitySchema = new mongoose.Schema({
-  userid :Number,
-  uuid :Number,
-  title :String,
-  content :String,
-  last_modify_date:  {
+    uuid: Number,
+    title: String,
+    content: String,
+    user:ObjectId,
+    last_modify_date: {
         type: Date,
         default: Date.now
     },
-  startdate: Date,
-  enddate: Date,
-  location: String,
-  publish_territory: String,
-  status:Boolean,
-  participants:Number,
-  personlimits:Number, 
-  createdate:{
+    startdate: Date,
+    enddate: Date,
+    location: String,
+    publish_territory: Boolean,
+    status: Boolean,
+    participants: Number,
+    personlimits: Number,
+    createdate: {
         type: Date,
         default: Date.now
     },
-  category:String,
-  sex:Boolean,
+    category: String,
+    sex: Boolean,
+})
+
+var ImageSchema = new mongoose.Schema({
+    activity:ObjectId,
+    url:String,
+    createdate: {
+        type: Date,
+        default: Date.now
+    },
 })
 
 
 
 // var News = mongoose.model('News', NewsSchema);
-var User = mongoose.model('User', UserSchema);
-var User = mongoose.model('Publish_Activity', ActivitySchema);
+mongoose.model('User', UserSchema);
+mongoose.model('Activity', ActivitySchema);
+mongoose.model('Image', ImageSchema);

@@ -34,7 +34,7 @@ angular.module('publishcontrollers', [])
         $scope.recordAudio = function() {
             // 显示操作表
             $ionicActionSheet.show({
-                titleText: '开始录音吧',  
+                titleText: '开始录音吧',
                 buttons: [{
                         text: '开始录音'
                     },
@@ -67,21 +67,38 @@ angular.module('publishcontrollers', [])
             })
 
         });
-
+        var ss = 0;
         $scope.publishdata = function(data) {
+            if (ss > 0 && ss < 180) {
+                msg("发布过于频繁，请3分钟后再次发布");
+                return;
+            };
+            var setIn = setInterval(function() {
+                if (ss == 180) {
+                    clearInterval(setIn);
+                    ss = 0;
+                };
+                ss++;
+            }, 1000)
 
             document.getElementById('publishdata').disabled = true;
-            var flag = false;
+            // var flag = false;
             data.phone = storeService.publicMethods('localStorage').get('phone');
-            data.location_city = (storeService.publicMethods('sessionStorage').get('location_city')==undefined)?'':storeService.publicMethods('sessionStorage').get('location_city');
+            data.location_city = (storeService.publicMethods('sessionStorage').get('location_city') == undefined) ? '' : storeService.publicMethods('sessionStorage').get('location_city');
+
+            function msg(msg) {
+                $ionicPopup.alert({
+                    title: '消息提示',
+                    template: msg
+                })
+                document.getElementById('publishdata').disabled = false;
+
+            }
 
             // alert(data.location_city);
             if (data.title == null || data.title.length > 40) {
-                $ionicPopup.alert({
-                    title: '消息提示',
-                    template: "标题不能为空或者标题超过了40个字符"
-                })
-                document.getElementById('publishdata').disabled = false;
+                msg("标题不能为空或者标题超过了40个字符");
+                ss = 0;
                 return;
             };
 
@@ -94,11 +111,8 @@ angular.module('publishcontrollers', [])
             };
 
             if (data.content.length < 10) {
-                $ionicPopup.alert({
-                    title: '消息提示',
-                    template: "介绍不能少于10位字符"
-                })
-                document.getElementById('publishdata').disabled = false;
+                msg("介绍不能少于10位字符");
+                ss = 0;
                 return;
             };
 
@@ -107,68 +121,64 @@ angular.module('publishcontrollers', [])
             var nowTime = d.getTime();
             var inputTime = new Date(data.startdate).getTime() - localOffset;
 
-            if(data.enddate<data.startdate){
-                $ionicPopup.alert({
-                    title: '消息提示',
-                    template: "结束时间不能小于开始时间"
-                })
-                document.getElementById('publishdata').disabled = false;
-                return;
-            }
+            // if (data.enddate < data.startdate) {
+            //     msg("结束时间不能小于开始时间");
+            //     ss = 0;
+            //     return;
+            // }
 
-            if (inputTime <= nowTime || data.enddate == undefined || data.startdate == undefined) {
-                $ionicPopup.alert({
-                    title: '消息提示',
-                    template: "请选择未来的时间或者未选择活动时间"
-                });
-                document.getElementById('publishdata').disabled = false;
-                return;
-            }
+            // if (inputTime <= nowTime || data.enddate == undefined || data.startdate == undefined) {
+            //     msg("请选择未来的时间或者未选择活动时间");
+            //     ss = 0;
+            //     return;
+            // }
 
             // data.startdate1 = parseInt(Date.parse(new Date(data.startdate)) / 1000);
             // data.enddate1 = parseInt(Date.parse(new Date(data.enddate)) / 1000);
 
             var uuid = data.uuid = Number(new Date()) + data.phone;
 
-            HttpService.postdata('http:192.168.2.121:50000/activity/publish', data).success(function(data) {
+            // HttpService.postdata('http:192.168.2.121:50000/activity/publish', data).success(function(data) {
+            HttpService.postdata('activity/publish', data).success(function(data) {
                 $ionicPopup.alert({
-                    title: '消息提示',
-                    template: data.message
-                }).then(function() {
-                    if (data.id == -12) {
-                        $state.go('login');
-                    };
-                })
-                flag = true;
+                        title: '消息提示',
+                        template: data.msg
+                    }).then(function() {
+                        if (data.id == -12) {
+                            $state.go('login');
+                        };
+                    })
+                    // flag = true;
+                document.getElementById('publishdata').disabled = false;
             }).error(function(data) {
                 console.log(data);
             })
 
-            if (flag) {
-                document.getElementById('publishdata').disabled = false;
-            };
+            // if (flag) {
+            //     document.getElementById('publishdata').disabled = false;
+            // };
 
             // 上传音频文件
             var mediaFiles = storeService.publicMethods('sessionStorage').get('mediaFiles');
 
             var i, len;
-            
+
             if (mediaFiles) {
-            for (var i = 0, len = mediaFiles.length; i < len; i += 1) {
-                var ft = new FileTransfer(),
-                    path = mediaFiles[i].fullPath,
-                    name = mediaFiles[i].name;
-                ft.upload(path,
-                    "http:192.168.2.121:50000/audio?uuid="+uuid,
-                    function(result) {
-                        // console.log('Upload success: ' + result.responseCode);
-                        // console.log(result.bytesSent + ' bytes sent');
-                    },
-                    function(error) {
-                        // console.log('Error uploading file ' + path + ': ' + error.code);
-                    }, { fileName: name });
-            }
-            storeService.publicMethods('sessionStorage').remove('mediaFiles');
+                for (var i = 0, len = mediaFiles.length; i < len; i += 1) {
+                    var ft = new FileTransfer(),
+                        path = mediaFiles[i].fullPath,
+                        name = mediaFiles[i].name;
+                    ft.upload(path,
+                        "http:192.168.2.121:50000/audio?uuid=" + uuid,
+                        function(result) {
+                            // console.log('Upload success: ' + result.responseCode);
+                            // console.log(result.bytesSent + ' bytes sent');
+                        },
+                        function(error) {
+                            // console.log('Error uploading file ' + path + ': ' + error.code);
+                        }, { fileName: name });
+                }
+                storeService.publicMethods('sessionStorage').remove('mediaFiles');
             };
 
             // 上传图片
@@ -181,7 +191,7 @@ angular.module('publishcontrollers', [])
                     var options = new FileUploadOptions();
                     var imagefilename = Number(new Date()) + ".jpg";
                     options.fileName = imagefilename;
-                    
+
                     var params = {};
                     params.uuid = uuid;
                     options.params = params;
@@ -200,13 +210,10 @@ angular.module('publishcontrollers', [])
                     break;
                 }
             };
-
             $scope.clearPublish();
-
         }
 
         $scope.clearPublish = function() {
-
             for (var i = 1; i < 7; i++) {
                 var j = 'Pic' + i;
                 var images = document.getElementById(j);

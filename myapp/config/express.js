@@ -34,18 +34,7 @@ module.exports = function() {
         next();
     });
 
-    app.use(function(req, res, next) {
-        var bearerToken;
-        var bearerHeader = req.headers["authorization"];
-        if (typeof bearerHeader !== 'undefined') {
-            var bearer = bearerHeader.split(" ");
-            bearerToken = bearer[1];
-            req.token = bearerToken;
-            next();
-        } else {
-            res.send(403);
-        }
-    })
+   
 
     app.use(function(req, res, next) {
         res.status(404);

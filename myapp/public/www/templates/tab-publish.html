@@ -1,9 +1,9 @@
 <ion-view view-title="发布活动信息">
     <ion-nav-buttons side="right">
-        <a class="button button-stable" id="publishdata" ng-click="publishdata(publish)"> 发布 </a>
+        <button type="submit" class="button button-energized" id="publishdata" ng-click="publishdata(publish)"> 发布 </button>
     </ion-nav-buttons>
     <ion-nav-buttons side="left">
-        <a class="button button-stable" ng-click="clearPublish()"> 清空 </a>
+        <a class="button button-energized" ng-click="clearPublish()"> 清空 </a>
     </ion-nav-buttons>
     <ion-content class="padding" scroll="true">
         <div class="list card">
@@ -25,7 +25,7 @@
         </div>
         <div class="list card">
             <div class="item item-divider bar bar-energized">活动内容及介绍</div>
-            <textarea ng-model="publish.content" placeholder="活动内容及介绍" rows=20>
+            <textarea ng-model="publish.content" placeholder="活动内容及介绍" rows=15 style="width:100%;padding:20px">
             </textarea>
             <img id="Pic1" width="0" src="" />
             <img id="Pic2" width="0" src="" />

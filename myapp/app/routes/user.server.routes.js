@@ -8,7 +8,7 @@ module.exports = function(app) {
 
 app.route('/user/register').post(UserController.register)
 app.route('/user/login').post(UserController.login)
-app.route('/activity/publish').post(UserController.publish)
+app.route('/activity/publish').post(UserController.ensureAuthorized,UserController.publish)
 
 app.route('/images/upload').post(UserController.image_upload)
 

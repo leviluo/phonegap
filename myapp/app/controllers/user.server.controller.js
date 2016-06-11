@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 // var News = mongoose.model('News');
 var User = mongoose.model('User');
-var Publish_Activity = mongoose.model('Publish_Activity');
+var Activity = mongoose.model('Activity');
+var Images = mongoose.model('Image');
 // var Photoes = mongoose.model('Photoes');
 var jwt = require("jsonwebtoken");
 var config = require('../../config/config');
@@ -72,11 +73,38 @@ module.exports = {
         for (key in req.body) {
             console.log(key + ":" + req.body[key]);
         }
-        var Publish_activity = new Publish_Activity(req.body);
-        Publish_activity.save(function(err, docs) {
+        // console.log(req.token);
+        User.findOne({ _id: req.userid }, function(err, docs) {
             if (err) return next(err);
-            console.log(docs);
+            if (docs) {
+                req.body.user = req.userid;
+                var activity = new Activity(req.body);
+                activity.save(function(err, docs) {
+                    if (err) return next(err);
+                    return res.json({'id':0,'msg':'发布成功'})
+                })
+            }else{
+                return res.json({'id':-11,'msg':'用户不存在'})
+            }
         })
+    },
+
+    ensureAuthorized: function(req, res, next) {
+        var bearerToken;
+        var bearerHeader = req.headers["authorization"];
+        if (typeof bearerHeader !== 'undefined') {
+            var bearer = bearerHeader.split(" ");
+            bearerToken = bearer[1];
+            req.token = bearerToken;
+            // console.log('111'+req.token);
+            req.userid = jwt.decode(req.token, config.JWT_SECRET)._doc._id;
+            if (!req.userid) {
+                return res.json({ "id": "-10", "msg": "用户不存在" });
+            }
+            next();
+        } else {
+            res.send(403);
+        }
     },
 
 
@@ -100,6 +128,10 @@ module.exports = {
                     if (err) {
                         console.log('rename error: ' + err);
                     } else {
+                        console.log(req.body.uuid);
+                        // Activity.findOne({})
+                        images = new Images();
+                        images.save(function)
                         console.log('rename ok');
                     }
                 });
