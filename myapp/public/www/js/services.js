@@ -116,7 +116,10 @@ angular.module('starter.services', [])
         return {
             'request': function(config) {
                 config.headers = config.headers || {};
+                // alert('111');
                 if (storeService.publicMethods('localStorage').get('token')) {
+                    // alert('222');
+
                     config.headers.Authorization = 'Bearer ' + storeService.publicMethods('localStorage').get('token');
                 }
                 return config;

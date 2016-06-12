@@ -31,7 +31,8 @@ var ActivitySchema = new mongoose.Schema({
     uuid: Number,
     title: String,
     content: String,
-    user:ObjectId,
+    user: ObjectId,
+    images: [String],
     last_modify_date: {
         type: Date,
         default: Date.now
@@ -52,8 +53,8 @@ var ActivitySchema = new mongoose.Schema({
 })
 
 var ImageSchema = new mongoose.Schema({
-    activity:ObjectId,
-    url:String,
+    activity: ObjectId,
+    url: String,
     createdate: {
         type: Date,
         default: Date.now

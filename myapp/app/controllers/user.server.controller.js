@@ -1,9 +1,10 @@
+var express = require('express');
+var app = express();
 var mongoose = require('mongoose');
 // var News = mongoose.model('News');
 var User = mongoose.model('User');
 var Activity = mongoose.model('Activity');
 var Images = mongoose.model('Image');
-// var Photoes = mongoose.model('Photoes');
 var jwt = require("jsonwebtoken");
 var config = require('../../config/config');
 var fs = require('fs');
@@ -69,7 +70,7 @@ module.exports = {
     },
 
 
-    publish: function(req, res, next) {
+    activity_publish: function(req, res, next) {
         for (key in req.body) {
             console.log(key + ":" + req.body[key]);
         }
@@ -81,15 +82,32 @@ module.exports = {
                 var activity = new Activity(req.body);
                 activity.save(function(err, docs) {
                     if (err) return next(err);
-                    return res.json({'id':0,'msg':'发布成功'})
+                    return res.json({ 'id': 0, 'msg': '发布成功' })
                 })
-            }else{
-                return res.json({'id':-11,'msg':'用户不存在'})
+            } else {
+                return res.json({ 'id': -11, 'msg': '用户不存在' })
+            }
+        })
+    },
+
+    activity_get:function(req,res,next){
+         return res.json(req.data);
+    },
+
+    activity_location:function(req,res,next,location){
+        Activity.find(function(err, docs) {
+            if (err) return next(err);
+            if (docs) {
+                req.data = docs;
+                next();
+            } else {
+                return res.json({ 'id': -11, 'msg': '没有更新' })
             }
         })
     },
 
     ensureAuthorized: function(req, res, next) {
+        console.log("进入认证")
         var bearerToken;
         var bearerHeader = req.headers["authorization"];
         if (typeof bearerHeader !== 'undefined') {
@@ -107,9 +125,7 @@ module.exports = {
         }
     },
 
-
-
-    image_upload: function(req, res) {
+    image_upload: function(req, res, next) {
         //生成multiparty对象，并配置上传目标路径
         var form = new multiparty.Form({ uploadDir: './upload/images/' });
         //上传完成后处理
@@ -118,30 +134,44 @@ module.exports = {
             if (err) {
                 console.log('parse error: ' + err);
             } else {
-                // console.log('parse files: ' + filesTmp);
-                // console.log(files.file[0])
-                var inputFile = files.file[0];
-                var uploadedPath = inputFile.path;
-                var dstPath = './upload/images/' + inputFile.originalFilename;
-                //重命名为真实文件名
-                fs.rename(uploadedPath, dstPath, function(err) {
-                    if (err) {
-                        console.log('rename error: ' + err);
-                    } else {
-                        console.log(req.body.uuid);
-                        // Activity.findOne({})
-                        images = new Images();
-                        images.save(function)
-                        console.log('rename ok');
-                    }
-                });
-            }
-            res.writeHead(200, { 'content-type': 'text/plain;charset=utf-8' });
-            res.write('received upload:\n\n');
-            res.end(util.inspect({ fields: fields, files: filesTmp }));
-        });
+                User.findOne({ _id: req.userid }, function(err, docs) {
+                    if (err) return next(err);
+                    if (docs) {
+                        var inputFile = files.file[0];
+                        var uploadedPath = inputFile.path;
+                        var dstPath = './upload/images/' + inputFile.originalFilename;
 
+                        // Activity.findOne({ uuid: fields.uuid.toString() }, function(err, docs) {
+                        //     if (err) {
+                        //         console.log(err);
+                        //         return next(err);
+                        //     }
+                        //     console.log('信息保存成功');
+
+                        //重命名为真实文件名
+                        fs.rename(uploadedPath, dstPath, function(err) {
+                            if (err) {
+                                console.log('rename error: ' + err);
+                            } else {
+                                Activity.update({ uuid: fields.uuid.toString() }, { $push: { images: dstPath } }, function(err, docs) {
+                                    if (err) {
+                                        console.log(err);
+                                        return next(err);
+                                    }
+                                    console.log('信息保存成功');
+                                })
+                            }
+                        });
+                        // })
+                    } else {
+                        return res.json({ 'id': -11, 'msg': '用户不存在' })
+                    }
+                })
+            }
+        });
     },
+
+
 
     // 获取列表
     // list: function(req, res, next){

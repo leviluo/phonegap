@@ -228,8 +228,8 @@
         })
         .controller('LoginCtrl', function($scope, $ionicPopup, storeService, $state, HttpService) {
             $scope.submit = function(formdata) {
-                // HttpService.postdata('http:192.168.2.121:50000/user/login', formdata).success(function(data) {
-                HttpService.postdata('user/login', formdata).success(function(data) {
+                HttpService.postdata('http:192.168.2.121:50000/user/login', formdata).success(function(data) {
+                // HttpService.postdata('user/login', formdata).success(function(data) {
                     $ionicPopup.alert({
                         title: '消息提示',
                         template: data.msg
@@ -269,22 +269,24 @@
             var location = (storeService.publicMethods('sessionStorage').get('location_city') == undefined) ? '' : storeService.publicMethods('sessionStorage').get('location_city');
             // alert(location);
             $scope.doRefresh = function() {
-                HttpService.getdata('http:192.168.2.121:50000/activity/getactivity', { location: '' }).success(function(data) {
-                    var titles = {};
-                    $scope.images = {};
-                    var array = [];
-                    for (var i = 0; i < data.length; i++) {
+                // HttpService.getdata('http:192.168.2.121:50000/activity/get/'+'000').success(function(data) {
+                HttpService.getdata('activity/get/'+'000').success(function(data) {
+                    $scope.activitys = data;
+                    // var titles = {};
+                    // $scope.images = {};
+                    // var array = [];
+                    // for (var i = 0; i < data.length; i++) {
 
-                        if (data[i].url) {
-                            array.push('./' + data[i].url);
-                            $scope.images[data[i].id] = array;
-                        };
-                        if (titles.hasOwnProperty(data[i].id)) {
-                            continue;
-                        }
-                        titles[data[i].id] = data[i].id;
-                        $scope.activitys.push(data[i]);
-                    };
+                    //     if (data[i].url) {
+                    //         array.push('./' + data[i].url);
+                    //         $scope.images[data[i].id] = array;
+                    //     };
+                    //     if (titles.hasOwnProperty(data[i].id)) {
+                    //         continue;
+                    //     }
+                    //     titles[data[i].id] = data[i].id;
+                    //     $scope.activitys.push(data[i]);
+                    // };
                 })
             }
         })
