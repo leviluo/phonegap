@@ -11,6 +11,7 @@ module.exports = function() {
     app.use(bodyParser.json());
 
     app.use(express.static('./public/www'));
+    app.use(express.static('./upload/images'));
 
     app.use(morgan("dev"));
 

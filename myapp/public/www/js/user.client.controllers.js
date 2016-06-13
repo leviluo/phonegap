@@ -269,8 +269,8 @@
             var location = (storeService.publicMethods('sessionStorage').get('location_city') == undefined) ? '' : storeService.publicMethods('sessionStorage').get('location_city');
             // alert(location);
             $scope.doRefresh = function() {
-                // HttpService.getdata('http:192.168.2.121:50000/activity/get/'+'000').success(function(data) {
-                HttpService.getdata('activity/get/'+'000').success(function(data) {
+                HttpService.getdata('http:192.168.2.121:50000/activity/get/'+'000').success(function(data) {
+                // HttpService.getdata('activity/get/'+'000').success(function(data) {
                     $scope.activitys = data;
                     // var titles = {};
                     // $scope.images = {};

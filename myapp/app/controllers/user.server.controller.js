@@ -1,7 +1,6 @@
 var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
-// var News = mongoose.model('News');
 var User = mongoose.model('User');
 var Activity = mongoose.model('Activity');
 var Images = mongoose.model('Image');
@@ -10,6 +9,8 @@ var config = require('../../config/config');
 var fs = require('fs');
 var multiparty = require('multiparty');
 var util = require('util');
+var gm = require('gm')
+imageMagick = gm.subClass({ imageMagick : true });
 module.exports = {
     //   create: function(req, res, next){
     //   var news = new News(req.body);
@@ -90,20 +91,37 @@ module.exports = {
         })
     },
 
-    activity_get:function(req,res,next){
-         return res.json(req.data);
+    activity_get: function(req, res, next) {
+        // return res.json(req.data);
     },
 
-    activity_location:function(req,res,next,location){
-        Activity.find(function(err, docs) {
+    activity_location: function(req, res, next, location) {
+        Activity.find().sort({createdate:-1}).exec(function(err, docs) {
             if (err) return next(err);
             if (docs) {
                 req.data = docs;
-                next();
+                return res.json(req.data);
+                // next();
             } else {
                 return res.json({ 'id': -11, 'msg': '没有更新' })
             }
         })
+    },
+
+    image_get: function(req, res, next, name) {
+        console.log(name);
+        var url = './upload/images/' + name;
+        fs.readFile(url, "binary", function(error, file) {
+            if (error) {
+                res.writeHead(500, { "Content-Type": "text/plain" });
+                res.write(error + "\n");
+                res.end();
+            } else {
+                res.writeHead(200, { "Content-Type": "image/png" });
+                res.write(file, "binary");
+                res.end();
+            }
+        });
     },
 
     ensureAuthorized: function(req, res, next) {
