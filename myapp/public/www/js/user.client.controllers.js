@@ -229,7 +229,7 @@
         .controller('LoginCtrl', function($scope, $ionicPopup, storeService, $state, HttpService) {
             $scope.submit = function(formdata) {
                 HttpService.postdata('http:192.168.2.121:50000/user/login', formdata).success(function(data) {
-                // HttpService.postdata('user/login', formdata).success(function(data) {
+                    // HttpService.postdata('user/login', formdata).success(function(data) {
                     $ionicPopup.alert({
                         title: '消息提示',
                         template: data.msg
@@ -265,16 +265,22 @@
         })
         .controller('activityCtrl', function($scope, storeService, HttpService) {
             $scope.territory = "同城";
-            $scope.activitys = [];
+            console.log(storeService.publicMethods('localStorage').get('activitys'));
             var location = (storeService.publicMethods('sessionStorage').get('location_city') == undefined) ? '' : storeService.publicMethods('sessionStorage').get('location_city');
-            // alert(location);
+            $scope.activitys = (storeService.publicMethods('localStorage').get('activitys') == undefined) ? [] : storeService.publicMethods('localStorage').get('activitys');
+            console.log($scope.activitys.length==0)
+            console.log($scope.activitys)
             $scope.doRefresh = function() {
-                HttpService.getdata('http:192.168.2.121:50000/activity/get/'+'000').success(function(data) {
-                // HttpService.getdata('activity/get/'+'000').success(function(data) {
-                    $scope.activitys = data;
+                var lasttime = ($scope.activitys.length == 0) ? '2016-06-10T11:35:55.192Z' : $scope.activitys[0].createdate;
+                HttpService.postdata('http:192.168.2.121:50000/activity/get', { createdate: lasttime, location: location }).success(function(data) {
+                // HttpService.postdata('activity/get', { createdate: lasttime, location: '上海市' }).success(function(data) {
+                    
+                    $scope.activitys = data.concat($scope.activitys);
+                    storeService.publicMethods('localStorage').set('activitys', $scope.activitys)
+                    $scope.$broadcast('scroll.refreshComplete');
                     // var titles = {};
                     // $scope.images = {};
-                    // var array = [];
+                    // var array = []; 
                     // for (var i = 0; i < data.length; i++) {
 
                     //     if (data[i].url) {
@@ -297,7 +303,7 @@
 
     })
 
-    .controller('msgsCtrl', function() {
+    .controller('messagesCtrl', function() {
 
 
 

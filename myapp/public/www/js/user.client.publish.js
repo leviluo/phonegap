@@ -8,7 +8,7 @@ angular.module('publishcontrollers', [])
         $scope.publish.personlimits = "10000";
         $scope.publish.content = "";
 
-        $scope.publish.location = storeService.publicMethods('setimeionStorage').get('location');
+        $scope.publish.location_detail = storeService.publicMethods('setimeionStorage').get('location');
         //添加照片
         $scope.showphotoes = function() {
             // 显示操作表
@@ -88,7 +88,7 @@ angular.module('publishcontrollers', [])
             document.getElementById('publishdata').disabled = true;
             // var flag = false;
             data.phone = storeService.publicMethods('localStorage').get('phone');
-            data.location_city = (storeService.publicMethods('setimeionStorage').get('location_city') == undefined) ? '' : storeService.publicMethods('setimeionStorage').get('location_city');
+            data.location = (storeService.publicMethods('sessionStorage').get('location_city') == undefined) ? '' : storeService.publicMethods('sessionStorage').get('location_city');
 
             function msg(msg) {
                 $ionicPopup.alert({

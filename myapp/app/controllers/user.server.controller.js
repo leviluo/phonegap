@@ -3,7 +3,6 @@ var app = express();
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Activity = mongoose.model('Activity');
-var Images = mongoose.model('Image');
 var jwt = require("jsonwebtoken");
 var config = require('../../config/config');
 var fs = require('fs');
@@ -91,12 +90,21 @@ module.exports = {
         })
     },
 
-    activity_get: function(req, res, next) {
-        // return res.json(req.data);
+    image_post: function(req, res, next) {
+        return res.json();
     },
 
-    activity_location: function(req, res, next, location) {
-        Activity.find().sort({createdate:-1}).exec(function(err, docs) {
+    activity_get: function(req, res, next) {
+
+        console.log('ok');
+        for(key in req.body){
+            console.log(req.body[key]);
+        }
+
+        var location = req.body['location'];
+        var createdate = req.body['createdate'];
+
+        Activity.find({"location":location,"createdate":{$gt:new Date(createdate)}}).sort({createdate:-1}).exec(function(err, docs) {
             if (err) return next(err);
             if (docs) {
                 req.data = docs;
@@ -109,7 +117,7 @@ module.exports = {
     },
 
     image_get: function(req, res, next, name) {
-        console.log(name);
+        // console.log(name);
         var url = './upload/images/' + name;
         fs.readFile(url, "binary", function(error, file) {
             if (error) {

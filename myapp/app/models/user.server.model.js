@@ -52,18 +52,7 @@ var ActivitySchema = new mongoose.Schema({
     sex: Boolean,
 })
 
-var ImageSchema = new mongoose.Schema({
-    activity: ObjectId,
-    url: String,
-    createdate: {
-        type: Date,
-        default: Date.now
-    },
-})
-
-
 
 // var News = mongoose.model('News', NewsSchema);
 mongoose.model('User', UserSchema);
 mongoose.model('Activity', ActivitySchema);
-mongoose.model('Image', ImageSchema);
